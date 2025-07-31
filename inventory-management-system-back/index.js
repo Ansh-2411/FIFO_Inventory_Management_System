@@ -1,10 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const db = require('./models');
+const categoryRoutes = require('./routes/categoryRoutes.js');
+const ProductRoutes = require('./routes/productRoutes.js');
+const PurchaseRoutes = require('./routes/purchaseRoutes.js');
 
 const app = express();
 
 app.use(express.json());
+
 
 app.get('/', (req, res) => {
   res.json({
@@ -13,6 +17,10 @@ app.get('/', (req, res) => {
     version: "1.0.0"
   });
 });
+
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', ProductRoutes);
+app.use('/api/purchases', PurchaseRoutes);
 
 
 // Error handling middleware
@@ -34,3 +42,5 @@ db.sequelize.sync({ force: false }).then(() => {
 }).catch(err => {
   console.error('Failed to sync database:', err);
 });
+
+
