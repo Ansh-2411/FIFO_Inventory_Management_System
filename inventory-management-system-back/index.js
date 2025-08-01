@@ -4,11 +4,13 @@ const db = require('./models');
 const categoryRoutes = require('./routes/categoryRoutes.js');
 const ProductRoutes = require('./routes/productRoutes.js');
 const PurchaseRoutes = require('./routes/purchaseRoutes.js');
+const FeedbackRoutes = require('./routes/feedbackRoutes.js');
+const saleRoutes = require('./routes/saleRoutes.js');
+const StockLedgerRoutes = require('./routes/stockLedgerRoutes.js');
 
 const app = express();
 
 app.use(express.json());
-
 
 app.get('/', (req, res) => {
   res.json({
@@ -21,7 +23,9 @@ app.get('/', (req, res) => {
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', ProductRoutes);
 app.use('/api/purchases', PurchaseRoutes);
-
+app.use('/api/feedback', FeedbackRoutes);
+app.use('/api/sales', saleRoutes);
+app.use('/api/stock_ledger', StockLedgerRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

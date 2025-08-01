@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     feedback_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     rating: DataTypes.INTEGER,
     customer_id: { type: DataTypes.INTEGER, allowNull: false },
+    product_id: { type: DataTypes.INTEGER, allowNull: false },
     feedback: DataTypes.TEXT
   }, {
     tableName: 'feedbacks',
@@ -11,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Feedback.associate = models => {
     Feedback.belongsTo(models.Customer, { foreignKey: 'customer_id' });
+    Feedback.belongsTo(models.Product, { foreignKey: 'product_id' });
   };
 
   return Feedback;
