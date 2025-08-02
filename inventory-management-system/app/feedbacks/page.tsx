@@ -46,7 +46,7 @@ const feedback = [
   },
 ]
 
-export function FeedbackPage() {
+export default function FeedbackPage() {
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredFeedback = feedback.filter(

@@ -47,7 +47,7 @@ const initialCustomers = [
   },
 ]
 
-export function CustomersPage() {
+export default function CustomersPage() {
   const [customers, setCustomers] = useState(initialCustomers)
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)

@@ -16,7 +16,7 @@ const initialCategories = [
   { id: 5, name: "Clothing", description: "Apparel and accessories", productCount: 6 },
 ]
 
-export function CategoriesPage() {
+export default function CategoriesPage() {
   const [categories, setCategories] = useState(initialCategories)
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)

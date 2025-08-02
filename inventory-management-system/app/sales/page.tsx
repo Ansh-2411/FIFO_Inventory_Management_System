@@ -56,7 +56,7 @@ const initialSales = [
   },
 ]
 
-export function SalesPage() {
+export default function SalesPage() {
   const [sales, setSales] = useState(initialSales)
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)

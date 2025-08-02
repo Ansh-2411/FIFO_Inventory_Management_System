@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, TrendingUp, DollarSign, AlertTriangle } from "lucide-react"
 
-export function Dashboard() {
+export default function Dashboard() {
   const stats = [
     {
       title: "Total Products",

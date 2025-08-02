@@ -47,7 +47,7 @@ const initialSuppliers = [
   },
 ]
 
-export function SuppliersPage() {
+export default function SuppliersPage() {
   const [suppliers, setSuppliers] = useState(initialSuppliers)
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)

@@ -52,7 +52,7 @@ const initialPurchases = [
   },
 ]
 
-export function PurchasesPage() {
+export default function PurchasesPage() {
   const [purchases, setPurchases] = useState(initialPurchases)
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)

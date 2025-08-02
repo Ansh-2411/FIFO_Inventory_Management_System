@@ -27,28 +27,38 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
+import { useRouter, usePathname } from "next/navigation"
 
 const menuItems = [
-  { id: "dashboard", label: "Dashboard", icon: BarChart3 },
-  { id: "products", label: "Products", icon: Package },
-  { id: "categories", label: "Categories", icon: FolderOpen },
-  { id: "purchases", label: "Purchases", icon: ShoppingCart },
-  { id: "sales", label: "Sales", icon: TrendingUp },
-  { id: "stock-ledger", label: "Stock Ledger", icon: FileText },
-  { id: "suppliers", label: "Suppliers", icon: Truck },
-  { id: "customers", label: "Customers", icon: Users },
-  { id: "feedback", label: "Feedback", icon: MessageSquare },
-  { id: "images", label: "Images", icon: ImageIcon },
+  { id: "dashboard", label: "Dashboard", icon: BarChart3, path: "/dashboard" },
+  { id: "products", label: "Products", icon: Package, path: "/products" },
+  { id: "categories", label: "Categories", icon: FolderOpen, path: "/categories" },
+  { id: "purchases", label: "Purchases", icon: ShoppingCart, path: "/purchase" },
+  { id: "sales", label: "Sales", icon: TrendingUp, path: "/sales" },
+  { id: "stock-ledger", label: "Stock Ledger", icon: FileText, path: "/ledgers" },
+  { id: "suppliers", label: "Suppliers", icon: Truck, path: "/suppliers" },
+  { id: "customers", label: "Customers", icon: Users, path: "/customers" },
+  { id: "feedback", label: "Feedback", icon: MessageSquare, path: "/feedbacks" },
+  { id: "images", label: "Images", icon: ImageIcon, path: "/images" },
 ]
 
 interface SidebarProps {
-  activeSection: string
-  setActiveSection: (section: string) => void
   darkMode: boolean
   setDarkMode: (darkMode: boolean) => void
 }
 
-export function Sidebar({ activeSection, setActiveSection, darkMode, setDarkMode }: SidebarProps) {
+export function Sidebar({ darkMode, setDarkMode }: SidebarProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleNavigation = (path: string) => {
+    router.push(path)
+  }
+
+  const isActive = (path: string) => {
+    return pathname === path || (pathname.startsWith(path) && path !== "/dashboard")
+  }
+
   return (
     <SidebarPrimitive className="border-r border-gray-200 dark:border-gray-700">
       <SidebarHeader className="p-6">
@@ -70,8 +80,8 @@ export function Sidebar({ activeSection, setActiveSection, darkMode, setDarkMode
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
-                    onClick={() => setActiveSection(item.id)}
-                    isActive={activeSection === item.id}
+                    onClick={() => handleNavigation(item.path)}
+                    isActive={isActive(item.path)}
                     className="w-full justify-start gap-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-300 data-[active=true]:bg-teal-100 dark:data-[active=true]:bg-teal-900/30 data-[active=true]:text-teal-700 dark:data-[active=true]:text-teal-300"
                   >
                     <item.icon className="w-5 h-5" />

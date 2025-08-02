@@ -47,7 +47,7 @@ const stockLedger = [
   },
 ]
 
-export function StockLedgerPage() {
+export default function StockLedgerPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [expandedRows, setExpandedRows] = useState<number[]>([])
 
