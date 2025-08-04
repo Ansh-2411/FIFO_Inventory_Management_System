@@ -33,6 +33,56 @@ router.post('/create', async (req, res) => {
   }
 });
 
+router.delete('/delete/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const purchase = await Purchase.findOne({ where: { purchase_id: id } });
+    if (!purchase) {
+      return res.status(404).json({ success: false, message: "Purchase not found" });
+    }
+
+    await Purchase.destroy({ where: { purchase_id: id } });
+
+    res.json({
+      success: true,
+      message: "Purchase deleted successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+  }
+})
+
+router.put('/update/:id', async (req, res) => {
+  const id = req.params.id;
+  const { product_id, supplier_id, quantity, cost_price, purchase_date, batch_no } = req.body;
+
+  try {
+    const purchase = await Purchase.findOne({ where: { purchase_id: id } });
+    if (!purchase) {
+      return res.status(404).json({ success: false, message: "Purchase not found" });
+    }
+
+    const updatedPurchase = await purchase.update({
+      product_id,
+      supplier_id,
+      quantity,
+      cost_price,
+      purchase_date,
+      batch_no
+    });
+
+    res.json({
+      success: true,
+      message: "Purchase updated successfully",
+      data: updatedPurchase
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+  }
+})
+
 router.get('/all', async (req, res) => {
   try {
     const purchases = await Purchase.findAll({

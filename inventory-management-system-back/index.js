@@ -7,6 +7,8 @@ const PurchaseRoutes = require('./routes/purchaseRoutes.js');
 const FeedbackRoutes = require('./routes/feedbackRoutes.js');
 const saleRoutes = require('./routes/saleRoutes.js');
 const StockLedgerRoutes = require('./routes/stockLedgerRoutes.js');
+const supplierRoutes = require('./routes/supplierRoute.js');
+const customerRoutes = require('./routes/customerRoutes.js');
 
 const app = express();
 
@@ -26,6 +28,10 @@ app.use('/api/purchases', PurchaseRoutes);
 app.use('/api/feedback', FeedbackRoutes);
 app.use('/api/sales', saleRoutes);
 app.use('/api/stock_ledger', StockLedgerRoutes);
+app.use('/api/suppliers', supplierRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/feedbacks', FeedbackRoutes);
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

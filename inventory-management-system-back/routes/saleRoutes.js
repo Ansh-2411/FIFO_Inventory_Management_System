@@ -35,6 +35,36 @@ routes.post('/create', async(req,res) => {
     }
 })
 
+routes.post('/update/:id', async(req, res) => {
+    const { id } = req.params;
+    const { product_id, customer_id, quantity, selling_price } = req.body;
+    try {
+        const sale = await Sale.findByPk(id);
+        if(!sale) {
+            return res.status(404).json({
+                success: false,
+                message: 'Sale not found'
+            });
+        }
+        sale.product_id = product_id;
+        sale.customer_id = customer_id;
+        sale.quantity = quantity;
+        sale.selling_price = selling_price;
+        await sale.save();
+        res.status(200).json({
+            success: true,
+            message: 'Sale updated successfully',
+            data: sale
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error updating sale',
+            error: error.message
+        });
+    }
+});
+
 routes.get('/all', async(req, res) => {
     try {
         const sales = await Sale.findAll();
