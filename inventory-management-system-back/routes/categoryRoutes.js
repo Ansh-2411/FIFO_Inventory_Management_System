@@ -38,27 +38,19 @@ router.delete('/delete/:id', async (req, res) => {
 
     const products = await Product.findAll({ where: { category_id: id } });
 
-    for (const product of products) {
-      const productId = product.product_id;
-
-      const purchases = await Purchase.findAll({ where: { product_id: productId } });
-
-      for (const purchase of purchases) {
-        await StockLedger.destroy({ where: { purchase_id: purchase.purchase_id } });
-      }
-
-      await Image.destroy({ where: { product_id: productId } });
-      await Sale.destroy({ where: { product_id: productId } });
-      await Purchase.destroy({ where: { product_id: productId } });
+    if(products){
+        return res.status(400).json({
+            success: false,
+            message: "Category cannot be deleted as it has associated products"
+        }); 
     }
-
-    await Product.destroy({ where: { category_id: id } });
-    await Category.destroy({ where: { category_id: id } });
-
-    res.json({
-      success: true,
-      message: "Category and all linked data deleted successfully"
-    });
+    else{
+        await Category.destroy({ where: { category_id: id } });
+        res.json({
+            success: true,
+            message: "Category deleted successfully"
+        });
+    }
 
   } catch (error) {
     res.status(500).json({

@@ -39,4 +39,29 @@ router.get('/all', async (req, res) => {
     }
 })
 
+router.delete('/delete/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const feedbacks = await Feedback.findByPk(id);
+        if(!feedbacks) {
+            return res.status(404).json({
+                success: false,
+                message: "Feedback not found"
+            });
+        }else{
+            await feedbacks.destroy();
+            res.status(200).json({
+                success: true,
+                message: "Feedback deleted successfully"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error fetching feedbacks",
+            error: error.message
+        });
+    }
+})
+
 module.exports = router;
