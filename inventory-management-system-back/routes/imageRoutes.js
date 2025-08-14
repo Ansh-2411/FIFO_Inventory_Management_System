@@ -5,6 +5,7 @@ const { Image, Product } = require('../models');
 
 const router = express.Router();
 
+// Multer storage config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
@@ -12,14 +13,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Upload
+// Upload image
 router.post('/upload', upload.single('image'), async (req, res) => {
   try {
     const { product_id, url } = req.body;
     if (!product_id || (!req.file && !url)) {
       return res.status(400).json({ success: false, message: "product_id and image or url required" });
     }
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : url;
+
+    // Always store a full absolute URL
+    const imageUrl = req.file
+      ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+      : url;
+
     const newImage = await Image.create({ product_id, url: imageUrl });
     res.status(201).json({ success: true, message: "Image uploaded", data: newImage });
   } catch (error) {
@@ -27,7 +33,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
   }
 });
 
-// Get all
+// Get all images
 router.get('/all', async (req, res) => {
   try {
     const images = await Image.findAll({
@@ -49,8 +55,7 @@ router.get('/all', async (req, res) => {
   }
 });
 
-
-// Update
+// Update image
 router.put('/update/:id', upload.single('image'), async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,13 +66,15 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
       return res.status(404).json({ success: false, message: "Image not found" });
     }
 
-    let newUrl = url;
+    let newUrl = image.url;
     if (req.file) {
       newUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    } else if (url) {
+      newUrl = url;
     }
 
     image.product_id = product_id || image.product_id;
-    image.url = newUrl || image.url;
+    image.url = newUrl;
 
     await image.save();
 
@@ -77,12 +84,13 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
   }
 });
 
-// Delete
+// Delete image
 router.delete('/delete/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const image = await Image.findByPk(id);
     if (!image) return res.status(404).json({ success: false, message: "Image not found" });
+
     await image.destroy();
     res.status(200).json({ success: true, message: "Image deleted" });
   } catch (error) {
