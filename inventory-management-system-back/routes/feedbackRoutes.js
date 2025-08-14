@@ -4,9 +4,9 @@ const { json } = require('sequelize');
 const router = express.Router();
 
 router.post('/create',async(req,res)=>{
-    const {rating , customer_id, feedback , product_id} = req.body;
+    const {rating , customer_name, feedback , product_name} = req.body;
     try {
-        const feedbackData = await Feedback.create({rating , customer_id,feedback,product_id});
+        const feedbackData = await Feedback.create({rating , customer_name,feedback,product_name});
         res.status(201).json({
             success: true,
             message: "Feedback created successfully",
@@ -37,7 +37,8 @@ router.get('/all', async (req, res) => {
             error: error.message
         });
     }
-})
+});
+
 
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;

@@ -3,7 +3,7 @@ const { Category, Product, Image, Purchase, StockLedger , Sale } = require('../m
 const router = express.Router();
 
 router.post('/create',  async(req,res) => {
-    const {name} = req.body;
+    const {name , product_count , description} = req.body;
     try {
         const check = await Category.findOne({ where: { name } });
         console.log(check);
@@ -11,7 +11,7 @@ router.post('/create',  async(req,res) => {
             res.send("Category already exists");
         }
         else{
-             const category_name = await Category.create({name});
+             const category_name = await Category.create({name , product_count , description});
              res.status(201).json({
                 success: true,
                 message: "Category created successfully",
@@ -102,7 +102,7 @@ router.get("/:id" , async(req,res) => {
 })
 
 router.put('/update/:id', async (req, res) => {
-    const {name} = req.body;
+    const {name , product_count , description} = req.body;
     const category = await Category.findOne({ where: { category_id: req.params.id } });
     if (!category) {
         return res.status(404).json({
@@ -112,6 +112,8 @@ router.put('/update/:id', async (req, res) => {
     }
     try {
         category.name = name;
+        category.product_count = product_count;
+        category.description = description;
         await category.save();
         res.json({
             success: true,

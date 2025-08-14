@@ -30,7 +30,7 @@ router.post("/create", async (req, res) => {
 
 router.get('/all',async(req,res)=>{
     try {
-        const customers = await Customer.findAll();
+        const customers =  await Customer.findAll();
         if(customers.length === 0) {
             return res.status(404).json({
                 success: false,

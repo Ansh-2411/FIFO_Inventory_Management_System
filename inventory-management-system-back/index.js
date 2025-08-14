@@ -9,6 +9,7 @@ const saleRoutes = require('./routes/saleRoutes.js');
 const StockLedgerRoutes = require('./routes/stockLedgerRoutes.js');
 const supplierRoutes = require('./routes/supplierRoute.js');
 const customerRoutes = require('./routes/customerRoutes.js');
+const imageRoutes = require('./routes/imageRoutes.js');
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use('/uploads', express.static('uploads'));
+
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', ProductRoutes);
 app.use('/api/purchases', PurchaseRoutes);
@@ -31,7 +34,7 @@ app.use('/api/stock_ledger', StockLedgerRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/feedbacks', FeedbackRoutes);
-
+app.use('/api/images', imageRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
