@@ -3,7 +3,8 @@ const router = express.Router();
 const { Product, Supplier, Purchase } = require('../models');
 
 router.post('/create', async (req, res) => {
-  const { product_id, supplier_id, quantity, cost_price, purchase_date, batch_no } = req.body;
+  const { product_id, supplier_id, quantity, cost_price, batch_no } = req.body;
+  console.log(req.body);
   try {
     const product = await Product.findByPk(product_id);
     const supplier = await Supplier.findByPk(supplier_id);
@@ -18,7 +19,7 @@ router.post('/create', async (req, res) => {
       quantity,
       quantity_remaining: quantity,
       cost_price,
-      purchase_date,
+      purchase_date: Date.now(),
       batch_no
     });
 
@@ -38,7 +39,7 @@ router.get('/all', async (req, res) => {
     const purchases = await Purchase.findAll({
       include: [
         { model: Product, attributes: ['name'] },
-        { model: Supplier, attributes: ['name'] }
+        { model: Supplier, attributes: ['company_name'] }
       ]
     });
 
@@ -48,5 +49,17 @@ router.get('/all', async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
   }
 });
+
+router.get('/products-suppliers', async (req, res) => {
+  try {
+    // fetch all the product name and id and supplier name and id
+    const products = await Product.findAll({ attributes: ['product_id', 'name'] });
+    const suppliers = await Supplier.findAll({ attributes: ['supplier_id', 'company_name'] });
+    res.json({ success: true, data: { products, suppliers } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+
+  }
+})
 
 module.exports = router;

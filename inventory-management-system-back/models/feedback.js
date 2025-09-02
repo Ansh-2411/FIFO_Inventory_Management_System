@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     rating: DataTypes.INTEGER,
     customer_id: { type: DataTypes.INTEGER, allowNull: false },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
-    feedback: DataTypes.TEXT
+    feedback: DataTypes.TEXT,
+    feedback_datetime: DataTypes.DATE
   }, {
     tableName: 'feedbacks',
     timestamps: false

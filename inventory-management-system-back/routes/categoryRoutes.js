@@ -1,18 +1,17 @@
 const express = require('express');
-const { Category, Product, Image, Purchase, StockLedger , Sale } = require('../models');
+const { Category, Product, Image, Purchase, StockLedger, Sale } = require('../models');
 const router = express.Router();
 
-router.post('/create',  async(req,res) => {
-    const {name} = req.body;
+router.post('/create', async (req, res) => {
+    const { name, description } = req.body;
     try {
         const check = await Category.findOne({ where: { name } });
-        console.log(check);
-        if(check){
+        if (check) {
             res.send("Category already exists");
         }
-        else{
-             const category_name = await Category.create({name});
-             res.status(201).json({
+        else {
+            const category_name = await Category.create({ name: name, description: description });
+            res.status(201).json({
                 success: true,
                 message: "Category created successfully",
                 data: category_name
@@ -28,50 +27,61 @@ router.post('/create',  async(req,res) => {
 });
 
 router.delete('/delete/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
+    try {
+        const id = req.params.id;
 
-    const category = await Category.findOne({ where: { category_id: id } });
-    if (!category) {
-      return res.status(404).json({ success: false, message: "Category not found" });
+        const category = await Category.findOne({ where: { category_id: id } });
+        if (!category) {
+            return res.status(404).json({ success: false, message: "Category not found" });
+        }
+
+        const products = await Product.findAll({ where: { category_id: id } });
+
+        for (const product of products) {
+            const productId = product.product_id;
+
+            const purchases = await Purchase.findAll({ where: { product_id: productId } });
+
+            for (const purchase of purchases) {
+                await StockLedger.destroy({ where: { purchase_id: purchase.purchase_id } });
+            }
+
+            await Image.destroy({ where: { product_id: productId } });
+            await Sale.destroy({ where: { product_id: productId } });
+            await Purchase.destroy({ where: { product_id: productId } });
+        }
+
+        await Product.destroy({ where: { category_id: id } });
+        await Category.destroy({ where: { category_id: id } });
+
+        res.json({
+            success: true,
+            message: "Category and all linked data deleted successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message
+        });
     }
-
-    const products = await Product.findAll({ where: { category_id: id } });
-
-    for (const product of products) {
-      const productId = product.product_id;
-
-      const purchases = await Purchase.findAll({ where: { product_id: productId } });
-
-      for (const purchase of purchases) {
-        await StockLedger.destroy({ where: { purchase_id: purchase.purchase_id } });
-      }
-
-      await Image.destroy({ where: { product_id: productId } });
-      await Sale.destroy({ where: { product_id: productId } });
-      await Purchase.destroy({ where: { product_id: productId } });
-    }
-
-    await Product.destroy({ where: { category_id: id } });
-    await Category.destroy({ where: { category_id: id } });
-
-    res.json({
-      success: true,
-      message: "Category and all linked data deleted successfully"
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error.message
-    });
-  }
 });
 
-router.get("/all" , async(req,res) => {
+router.get("/all", async (req, res) => {
     try {
         const category = await Category.findAll();
+        // find total product in each category
+        for (let i = 0; i < category.length; i++) {
+            const products = await Product.findAll({ where: { category_id: category[i].category_id } });
+            category[i].dataValues.total_products = products.length;
+        }
+        if (category.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No categories found"
+            });
+        }
         res.json({
             success: true,
             message: "Categories fetched successfully",
@@ -86,10 +96,10 @@ router.get("/all" , async(req,res) => {
     }
 })
 
-router.get("/:id" , async(req,res) => {
+router.get("/:id", async (req, res) => {
     try {
-        const category = await Category.findOne({where : {category_id : req.params.id}});
-        if(!category) {
+        const category = await Category.findOne({ where: { category_id: req.params.id } });
+        if (!category) {
             return res.status(404).json({
                 success: false,
                 message: "Category not found"
@@ -110,16 +120,17 @@ router.get("/:id" , async(req,res) => {
 })
 
 router.put('/update/:id', async (req, res) => {
-    const {name} = req.body;
-    const category = await Category.findOne({ where: { category_id: req.params.id } });
-    if (!category) {
-        return res.status(404).json({
-            success: false,
-            message: "Category not found"
-        });
-    }
     try {
+        const { name, description } = req.body;
+        const category = await Category.findOne({ where: { category_id: req.params.id } });
+        if (!category) {
+            return res.status(404).json({
+                success: false,
+                message: "Category not found"
+            });
+        }
         category.name = name;
+        category.description = description;
         await category.save();
         res.json({
             success: true,
@@ -132,7 +143,7 @@ router.put('/update/:id', async (req, res) => {
             message: "Internal Server Error",
             error: error.message
         });
-        
+
     }
 })
 

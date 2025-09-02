@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -24,39 +24,60 @@ interface Category {
   total_products: number;
 }
 
-interface AddCategoryModalProps {
+interface EditCategoryModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onAdd: (category: Omit<Category, 'category_id'>) => void
+  onEdit: (categoryId: number, category: Omit<Category, 'category_id' | 'total_products'>) => void
+  category: Category | null
   isLoading?: boolean
 }
 
-export function AddCategoryModal({ open, onOpenChange, onAdd, isLoading = false }: AddCategoryModalProps) {
+export function EditCategoryModal({ open, onOpenChange, onEdit, category, isLoading = false }: EditCategoryModalProps) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   })
 
+  // Update form data when category changes
+  useEffect(() => {
+    if (category) {
+      setFormData({
+        name: category.name,
+        description: category.description,
+      })
+    }
+  }, [category])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const newCategory = {
+    if (!category) return
+    
+    const updatedCategory = {
       name: formData.name,
       description: formData.description,
-      total_products: 0,
     }
-    onAdd(newCategory)
-    setFormData({
-      name: "",
-      description: "",
-    })
+    onEdit(category.category_id, updatedCategory)
   }
+
+  const handleCancel = () => {
+    // Reset form data to original values
+    if (category) {
+      setFormData({
+        name: category.name,
+        description: category.description,
+      })
+    }
+    onOpenChange(false)
+  }
+
+  if (!category) return null
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Category</DialogTitle>
-          <DialogDescription>Create a new product category.</DialogDescription>
+          <DialogTitle>Edit Category</DialogTitle>
+          <DialogDescription>Update the category information.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -87,7 +108,7 @@ export function AddCategoryModal({ open, onOpenChange, onAdd, isLoading = false 
             <Button 
               type="button" 
               variant="outline" 
-              onClick={() => onOpenChange(false)}
+              onClick={handleCancel}
               disabled={isLoading}
             >
               Cancel
@@ -100,10 +121,10 @@ export function AddCategoryModal({ open, onOpenChange, onAdd, isLoading = false 
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Adding...
+                  Updating...
                 </>
               ) : (
-                "Add Category"
+                "Update Category"
               )}
             </Button>
           </DialogFooter>
@@ -111,4 +132,4 @@ export function AddCategoryModal({ open, onOpenChange, onAdd, isLoading = false 
       </DialogContent>
     </Dialog>
   )
-}
+} 

@@ -26,7 +26,7 @@ export function AddCustomerModal({ open, onOpenChange, onAdd }: AddCustomerModal
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    contact: "",
     address: "",
   })
 
@@ -36,7 +36,7 @@ export function AddCustomerModal({ open, onOpenChange, onAdd }: AddCustomerModal
       id: Date.now(),
       name: formData.name,
       email: formData.email,
-      phone: formData.phone,
+      contact: formData.contact,
       address: formData.address,
       totalPurchases: 0,
       totalSpent: 0,
@@ -46,7 +46,7 @@ export function AddCustomerModal({ open, onOpenChange, onAdd }: AddCustomerModal
     setFormData({
       name: "",
       email: "",
-      phone: "",
+      contact: "",
       address: "",
     })
   }
@@ -82,12 +82,12 @@ export function AddCustomerModal({ open, onOpenChange, onAdd }: AddCustomerModal
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="contact">Phone</Label>
               <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="Enter phone number"
+                id="contact"
+                value={formData.contact}
+                onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                placeholder="Enter contact number"
                 required
               />
             </div>

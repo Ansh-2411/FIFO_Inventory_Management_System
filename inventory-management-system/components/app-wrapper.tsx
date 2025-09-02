@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Sidebar } from '@/components/inventory-sidebar'
 import { Header } from '@/components/header'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import { Toaster } from '@/components/ui/toaster'
 
 interface AppWrapperProps {
   children: React.ReactNode
@@ -25,6 +26,7 @@ export function AppWrapper({ children }: AppWrapperProps) {
             <main className="flex-1 p-6 w-full">{children}</main>
           </div>
         </div>
+        <Toaster />
       </SidebarProvider>
     </div>
   )

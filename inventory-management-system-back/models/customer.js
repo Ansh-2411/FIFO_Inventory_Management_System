@@ -3,7 +3,9 @@ module.exports = (sequelize, DataTypes) => {
     customer_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: DataTypes.STRING,
     contact: DataTypes.STRING,
-    address: DataTypes.TEXT
+    address: DataTypes.TEXT,
+    email: DataTypes.STRING
+
   }, {
     tableName: 'customers',
     timestamps: false

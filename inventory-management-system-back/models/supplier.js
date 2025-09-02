@@ -1,9 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
   const Supplier = sequelize.define('Supplier', {
     supplier_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: DataTypes.STRING,
-    contact: DataTypes.STRING,
-    address: DataTypes.TEXT
+    company_name: DataTypes.STRING,
+    contact_person: DataTypes.STRING,
+    contact_number: DataTypes.STRING,
+    address: DataTypes.TEXT,
+    email:DataTypes.STRING,
+    total_orders:DataTypes.INTEGER
   }, {
     tableName: 'suppliers',
     timestamps: false
