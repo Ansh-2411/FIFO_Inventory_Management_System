@@ -101,31 +101,47 @@ router.get('/all', async (req, res) => {
       include: { model: Category, attributes: ['name'] }
     });
 
-    // find feedback count and average rating for each product
     for (const product of products) {
+      // feedbacks
       const feedbacks = await Feedback.findAll({
-        where: {
-          product_id: product.product_id
-        }
+        where: { product_id: product.product_id }
       });
       const feedbackCount = feedbacks.length;
-      const averageRating = feedbackCount > 0 ? (feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / feedbackCount).toFixed(2) : 0;
+      const averageRating =
+        feedbackCount > 0
+          ? (
+            feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / feedbackCount
+          ).toFixed(2)
+          : 0;
       product.dataValues.feedbackCount = feedbackCount;
       product.dataValues.averageRating = parseFloat(averageRating);
-    }
-    // find stock quantity for each product
-    for (const product of products) {
+
+      // stock
       const purchases = await Purchase.findAll({
         where: { product_id: product.product_id }
       });
-      const stockQuantity = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.quantity_remaining), 0);
+      const stockQuantity = purchases.reduce(
+        (sum, purchase) => sum + parseFloat(purchase.quantity_remaining),
+        0
+      );
       product.dataValues.stockQuantity = stockQuantity;
+
+      // ✅ fetch 1 image manually
+      const image = await Image.findOne({
+        where: { product_id: product.product_id },
+        attributes: ['url']
+      });
+      product.dataValues.image = image ? image.url : null;
     }
 
     res.json({ success: true, data: products });
-
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 });
 

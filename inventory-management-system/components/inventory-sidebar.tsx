@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   BarChart3,
@@ -13,7 +13,8 @@ import {
   ImageIcon,
   Moon,
   Sun,
-} from "lucide-react"
+  LineChart,
+} from "lucide-react";
 import {
   Sidebar as SidebarPrimitive,
   SidebarContent,
@@ -25,39 +26,61 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-} from "@/components/ui/sidebar"
-import { Button } from "@/components/ui/button"
-import { useRouter, usePathname } from "next/navigation"
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { useRouter, usePathname } from "next/navigation";
 
 const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: BarChart3, path: "/dashboard" },
+  { id: "analytics", label: "Analytics", icon: LineChart, path: "/analytics" },
   { id: "products", label: "Products", icon: Package, path: "/products" },
-  { id: "categories", label: "Categories", icon: FolderOpen, path: "/categories" },
-  { id: "purchases", label: "Purchases", icon: ShoppingCart, path: "/purchase" },
+  {
+    id: "categories",
+    label: "Categories",
+    icon: FolderOpen,
+    path: "/categories",
+  },
+  {
+    id: "purchases",
+    label: "Purchases",
+    icon: ShoppingCart,
+    path: "/purchase",
+  },
   { id: "sales", label: "Sales", icon: TrendingUp, path: "/sales" },
-  { id: "stock-ledger", label: "Stock Ledger", icon: FileText, path: "/ledgers" },
+  {
+    id: "stock-ledger",
+    label: "Stock Ledger",
+    icon: FileText,
+    path: "/ledgers",
+  },
   { id: "suppliers", label: "Suppliers", icon: Truck, path: "/suppliers" },
   { id: "customers", label: "Customers", icon: Users, path: "/customers" },
-  { id: "feedback", label: "Feedback", icon: MessageSquare, path: "/feedbacks" },
-  { id: "images", label: "Images", icon: ImageIcon, path: "/images" },
-]
+  {
+    id: "feedback",
+    label: "Feedback",
+    icon: MessageSquare,
+    path: "/feedbacks",
+  },
+];
 
 interface SidebarProps {
-  darkMode: boolean
-  setDarkMode: (darkMode: boolean) => void
+  darkMode: boolean;
+  setDarkMode: (darkMode: boolean) => void;
 }
 
 export function Sidebar({ darkMode, setDarkMode }: SidebarProps) {
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleNavigation = (path: string) => {
-    router.push(path)
-  }
+    router.push(path);
+  };
 
   const isActive = (path: string) => {
-    return pathname === path || (pathname.startsWith(path) && path !== "/dashboard")
-  }
+    return (
+      pathname === path || (pathname.startsWith(path) && path !== "/dashboard")
+    );
+  };
 
   return (
     <SidebarPrimitive className="border-r border-gray-200 dark:border-gray-700">
@@ -66,7 +89,9 @@ export function Sidebar({ darkMode, setDarkMode }: SidebarProps) {
           <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-blue-600 rounded-lg flex items-center justify-center">
             <Package className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Inventory App</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            Inventory App
+          </h1>
         </div>
       </SidebarHeader>
 
@@ -101,10 +126,14 @@ export function Sidebar({ darkMode, setDarkMode }: SidebarProps) {
           onClick={() => setDarkMode(!darkMode)}
           className="w-full justify-start gap-3 text-gray-700 dark:text-gray-300"
         >
-          {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          {darkMode ? (
+            <Sun className="w-4 h-4" />
+          ) : (
+            <Moon className="w-4 h-4" />
+          )}
           {darkMode ? "Light Mode" : "Dark Mode"}
         </Button>
       </SidebarFooter>
     </SidebarPrimitive>
-  )
+  );
 }

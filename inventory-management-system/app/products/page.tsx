@@ -24,6 +24,7 @@ interface ApiProduct {
   feedbackCount: number;
   averageRating: number;
   stockQuantity: number;
+  image: string;
 }
 
 // UI Product interface (for display)
@@ -75,7 +76,7 @@ export default function ProductsPage() {
               unit: apiProduct.unit,
               stock: apiProduct.stockQuantity,
               price: 0, // You might want to add price to your API response
-              image: "/placeholder.svg?height=200&width=200",
+              image: apiProduct.image,
               images: ["/placeholder.svg?height=400&width=400"],
               status:
                 apiProduct.stockQuantity > 10

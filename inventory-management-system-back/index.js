@@ -12,6 +12,7 @@ const StockLedgerRoutes = require('./routes/stockLedgerRoutes.js');
 const SupplierRoutes = require('./routes/suppliersRoutes.js');
 const CustomerRoutes = require('./routes/customerRoutes.js');
 const imageRoutes = require('./routes/imageRoutes.js');
+const dashboardRoutes = require('./routes/dashboardRoutes.js');
 
 const app = express();
 app.use(cors())
@@ -36,6 +37,7 @@ app.use('/api/stock-ledger', StockLedgerRoutes);
 app.use('/api/suppliers', SupplierRoutes);
 app.use('/api/customers', CustomerRoutes);
 app.use('/api/images', imageRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
